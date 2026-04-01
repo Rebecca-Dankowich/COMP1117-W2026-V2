@@ -32,6 +32,7 @@ public class Player : Character
     private void Start()
     {
         // INITIALIZATION LOGIC
+        SwitchState(GroundedState);
     }
 
     private void Update()
@@ -39,6 +40,7 @@ public class Player : Character
         if (IsDead) return;
 
         // UPDATE CURRENT STATE
+        currentState.UpdateState(this);
     }
 
     private void FixedUpdate()
@@ -46,11 +48,23 @@ public class Player : Character
         if (IsDead) return;
 
         // UPDATE CURRENT STATE
+        currentState.FixedUpdateState(this);
     }
 
     public void SwitchState(PlayerBaseState newState)
     {
         // SWITCH STATE LOGIC
+        // Clean up current state before leaving
+        // Safety check
+        if(currentState != null)
+        {
+            currentState.ExitState(this);
+        }
+
+        currentState = newState;
+
+        // Initialize the new state
+        currentState.EnterState(this);
     }
 
     // --- Unity Input System Events ---
